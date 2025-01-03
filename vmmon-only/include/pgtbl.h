@@ -47,7 +47,11 @@
  *-----------------------------------------------------------------------------
  */
 
-#if COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) // only used by PgtblVa2MPN() below
+// Fails to compile on CentOS Stream 9 kernel release 547
+//#ifndef KHREL_RELEASE
+#define NOCS9_OR_LT547 (! defined(KRHEL_RELEASE)) || (KRHEL_RELEASE < 547)
+
+#if COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) && NOCS9_OR_LT547 // only used by PgtblVa2MPN() below
 static INLINE MPN
 PgtblVa2MPNLocked(struct mm_struct *mm, // IN: Mm structure of a process
                   VA addr)              // IN: Address in the virtual address
@@ -129,7 +133,7 @@ PgtblVa2MPNLocked(struct mm_struct *mm, // IN: Mm structure of a process
  *-----------------------------------------------------------------------------
  */
 
-#if COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0)
+#if COMPAT_LINUX_VERSION_CHECK_LT(6, 5, 0) && NOCS9_OR_LT547
 
 static INLINE MPN
 PgtblVa2MPN(VA addr)  // IN
